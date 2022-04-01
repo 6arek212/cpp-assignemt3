@@ -23,13 +23,18 @@ namespace zich
     public:
         Matrix(int rows, int cols);
         Matrix(const Matrix &matrix);
-        Matrix(std::vector<double> vec, int rows, int cols);
+        Matrix(const std::vector<double> &vec, int rows, int cols);
         ~Matrix();
 
+        Matrix operator+(int num);
+        Matrix operator-(int num);
         Matrix operator+(const Matrix &matrix);
         Matrix operator-(const Matrix &matrix);
         Matrix operator*(const Matrix &matrix);
-        
+        Matrix operator*(int num);
+
+        void operator+=(int num);
+        void operator-=(int num);
         void operator*=(int num);
         void operator+=(const Matrix &matrix);
         void operator-=(const Matrix &matrix);
@@ -42,8 +47,11 @@ namespace zich
         bool operator==(const Matrix &matrix);
         bool operator!=(const Matrix &matrix);
 
-        void operator++();
-        void operator--();
+        Matrix &operator++();
+        Matrix operator++(int);
+
+        Matrix &operator--();
+        Matrix operator--(int);
 
         int getRows() const
         {
