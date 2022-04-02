@@ -202,31 +202,7 @@ Matrix::~Matrix()
     delete[] mat;
 }
 
-Matrix Matrix::operator+(int num)
-{
-    Matrix newMatrix = *this;
-    for (int i = 0; i < rows; i++)
-    {
-        for (int k = 0; k < rows; k++)
-        {
-            newMatrix.mat[i][k] += num;
-        }
-    }
-    return newMatrix;
-}
 
-Matrix Matrix::operator-(int num)
-{
-    Matrix newMatrix = *this;
-    for (int i = 0; i < rows; i++)
-    {
-        for (int k = 0; k < rows; k++)
-        {
-            newMatrix.mat[i][k] -= num;
-        }
-    }
-    return newMatrix;
-}
 
 Matrix Matrix::operator+(const Matrix &matrix)
 {
@@ -280,7 +256,7 @@ void Matrix::operator-=(const Matrix &matrix)
     }
 }
 
-Matrix Matrix::operator*(int num)
+Matrix Matrix::operator*(double num)
 {
     Matrix newMatrix = *this;
 
@@ -295,7 +271,7 @@ Matrix Matrix::operator*(int num)
     return newMatrix;
 }
 
-void Matrix::operator*=(int num)
+void Matrix::operator*=(double num)
 {
     for (int i = 0; i < rows; i++)
     {
@@ -337,14 +313,6 @@ bool Matrix::operator!=(const Matrix &matrix)
     return !isEquals(matrix);
 }
 
-void Matrix::operator+=(int num)
-{
-    addNum(num);
-}
-void Matrix::operator-=(int num)
-{
-    addNum(-num);
-}
 
 Matrix &Matrix::operator++()
 {

@@ -112,7 +112,4 @@ TEST_CASE("Matrix op ++ / -- / mat + num / num + mat")
     matrix1--;
     CHECK((matrix1 == Matrix(arr1, 3, 3)));
 
-    CHECK((matrix1 + 1 == Matrix(arr1pp, 3, 3)));
-
-    CHECK((matrix1 - 1 == Matrix(arr1, 3, 3) - 1));
 }

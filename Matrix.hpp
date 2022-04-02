@@ -26,16 +26,14 @@ namespace zich
         Matrix(const std::vector<double> &vec, int rows, int cols);
         ~Matrix();
 
-        Matrix operator+(int num);
-        Matrix operator-(int num);
+    
         Matrix operator+(const Matrix &matrix);
         Matrix operator-(const Matrix &matrix);
         Matrix operator*(const Matrix &matrix);
-        Matrix operator*(int num);
+        Matrix operator*(double num);
 
-        void operator+=(int num);
-        void operator-=(int num);
-        void operator*=(int num);
+  
+        void operator*=(double num);
         void operator+=(const Matrix &matrix);
         void operator-=(const Matrix &matrix);
         void operator*=(const Matrix &matrix);
