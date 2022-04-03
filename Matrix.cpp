@@ -69,6 +69,11 @@ namespace zich
         return newMat;
     }
 
+    Matrix operator+(const Matrix &matrix)
+    {
+        return matrix;
+    }
+
 }
 
 void hasSameDimensionsCheck(const Matrix &matrix1, const Matrix &matrix2)

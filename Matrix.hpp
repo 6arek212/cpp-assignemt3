@@ -25,12 +25,11 @@ namespace zich
         Matrix(const Matrix &matrix);
         Matrix(const std::vector<double> &vec, int rows, int cols);
         ~Matrix();
-        
+
         Matrix operator+(const Matrix &matrix);
         Matrix operator-(const Matrix &matrix);
         Matrix operator*(const Matrix &matrix);
         Matrix operator*(double num);
-
 
         void operator*=(double num);
         void operator+=(const Matrix &matrix);
@@ -64,9 +63,10 @@ namespace zich
         void setCols(int cols);
 
         friend std::ostream &operator<<(std::ostream &out, const Matrix &matrix);
-        friend void operator>>(std::istream &out,  Matrix &matrix);
+        friend void operator>>(std::istream &out, Matrix &matrix);
         friend Matrix operator*(double num, const Matrix &matrix);
         friend Matrix operator-(const Matrix &matrix);
+        friend Matrix operator+(const Matrix &matrix);
     };
 
 }
