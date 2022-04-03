@@ -57,6 +57,10 @@ TEST_CASE("matrix operations + / - / * ")
                                     6, 3, 0,
                                     0, 9, 3};
 
+    vector<double> arr1_min_arr2 = {2, 0, 0,
+                                    0, 2, 0,
+                                    0, 0, 2};
+
     CHECK_THROWS(Matrix matrix(arr1, -3, 3));
 
     Matrix matrix(arr1, 3, 3);
@@ -69,6 +73,8 @@ TEST_CASE("matrix operations + / - / * ")
 
     CHECK(((matrix + matrix2) == Matrix(arr1_arr2_add, 3, 3)));
     CHECK(((matrix + matrix3) == Matrix(arr1_arr3_add, 3, 3)));
+
+    CHECK(((matrix - matrix2) == Matrix(arr1_min_arr2, 3, 3)));
 
     matrix += matrix3;
     CHECK((matrix == Matrix(arr1_arr3_add, 3, 3)));
@@ -83,7 +89,7 @@ TEST_CASE("matrix operations + / - / * ")
     CHECK((matrix == Matrix(arr1_arr3_mul, 3, 3)));
 }
 
-TEST_CASE("Matrix op ++ / -- / mat + num / num + mat")
+TEST_CASE("Matrix op ++ / -- ")
 {
 
     vector<double> arr1 = {3, 0, 0,
@@ -111,5 +117,12 @@ TEST_CASE("Matrix op ++ / -- / mat + num / num + mat")
 
     matrix1--;
     CHECK((matrix1 == Matrix(arr1, 3, 3)));
-
 }
+
+// TEST_CASE("input/output Matrix")
+// {
+//     Matrix matrix(2, 2);
+//     cout << "Enter matrix of size 2*2 numbers :";
+//     cin >> matrix;
+//     cout << matrix;
+// }

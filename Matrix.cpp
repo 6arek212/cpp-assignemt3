@@ -26,6 +26,17 @@ namespace zich
         return out;
     }
 
+    void operator>>(std::istream &out, Matrix &matrix)
+    {
+        for (size_t i = 0; i < matrix.rows; i++)
+        {
+            for (size_t k = 0; k < matrix.cols; k++)
+            {
+                cin >> matrix.mat[i][k];
+            }
+        }
+    }
+
     Matrix operator*(double num, const Matrix &matrix)
     {
         Matrix newMat = matrix;
@@ -202,8 +213,6 @@ Matrix::~Matrix()
     delete[] mat;
 }
 
-
-
 Matrix Matrix::operator+(const Matrix &matrix)
 {
     hasSameDimensionsCheck(*this, matrix);
@@ -312,7 +321,6 @@ bool Matrix::operator!=(const Matrix &matrix)
     hasSameDimensionsCheck(*this, matrix);
     return !isEquals(matrix);
 }
-
 
 Matrix &Matrix::operator++()
 {
