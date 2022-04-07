@@ -17,7 +17,6 @@ namespace zich
         double sumOfMatrix() const;
         bool isEquals(const Matrix &matrix) const;
         void addNum(int num);
-        Matrix multiply(const Matrix &matrix);
         void initMat();
 
     public:
@@ -26,10 +25,10 @@ namespace zich
         Matrix(const std::vector<double> &vec, int rows, int cols);
         ~Matrix();
 
-        Matrix operator+(const Matrix &matrix);
-        Matrix operator-(const Matrix &matrix);
-        Matrix operator*(const Matrix &matrix);
-        Matrix operator*(double num);
+        Matrix operator+(const Matrix &matrix) const;
+        Matrix operator-(const Matrix &matrix) const;
+        Matrix operator*(const Matrix &matrix) const;
+        Matrix operator*(double num) const;
 
         void operator*=(double num);
         void operator+=(const Matrix &matrix);
@@ -42,6 +41,8 @@ namespace zich
         bool operator<=(const Matrix &matrix);
         bool operator==(const Matrix &matrix);
         bool operator!=(const Matrix &matrix);
+
+        Matrix& operator=(const Matrix &matrix);
 
         Matrix &operator++();
         Matrix operator++(int);

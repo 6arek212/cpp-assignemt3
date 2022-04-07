@@ -39,34 +39,12 @@ namespace zich
 
     Matrix operator*(double num, const Matrix &matrix)
     {
-        Matrix newMat = matrix;
-        for (int i = 0; i < matrix.rows; i++)
-        {
-            for (int k = 0; k < matrix.cols; k++)
-            {
-                newMat.mat[i][k] *= num;
-            }
-        }
-        return newMat;
+        return matrix * num;
     }
 
     Matrix operator-(const Matrix &matrix)
     {
-        Matrix newMat = matrix;
-
-        for (int i = 0; i < matrix.rows; i++)
-        {
-
-            for (int k = 0; k < matrix.cols; k++)
-            {
-                if (newMat.mat[i][k] != 0)
-                {
-                    newMat.mat[i][k] *= -1;
-                }
-            }
-        }
-
-        return newMat;
+        return matrix * -1;
     }
 
     Matrix operator+(const Matrix &matrix)
@@ -218,7 +196,34 @@ Matrix::~Matrix()
     delete[] mat;
 }
 
-Matrix Matrix::operator+(const Matrix &matrix)
+Matrix &Matrix::operator=(const Matrix &matrix)
+{
+    if (this == &matrix)
+    {
+        return *this;
+    }
+    for (int i = 0; i < rows; i++)
+    {
+        delete[] mat[i];
+    }
+    delete[] mat;
+
+    this->rows = matrix.rows;
+    this->cols = matrix.cols;
+    this->mat = new double *[(size_t)rows];
+
+    for (int i = 0; i < rows; i++)
+    {
+        mat[i] = new double[(size_t)cols];
+        for (int k = 0; k < cols; k++)
+        {
+            mat[i][k] = matrix.mat[i][k];
+        }
+    }
+    return *this;
+}
+
+Matrix Matrix::operator+(const Matrix &matrix) const
 {
     hasSameDimensionsCheck(*this, matrix);
     Matrix newMatrix = *this;
@@ -235,42 +240,22 @@ Matrix Matrix::operator+(const Matrix &matrix)
 void Matrix::operator+=(const Matrix &matrix)
 {
     hasSameDimensionsCheck(*this, matrix);
-    for (int i = 0; i < rows; i++)
-    {
-        for (int k = 0; k < rows; k++)
-        {
-            mat[i][k] += matrix.mat[i][k];
-        }
-    }
+    *this = *this + matrix;
 }
 
-Matrix Matrix::operator-(const Matrix &matrix)
+Matrix Matrix::operator-(const Matrix &matrix) const
 {
     hasSameDimensionsCheck(*this, matrix);
-    Matrix newMatrix = *this;
-    for (int i = 0; i < rows; i++)
-    {
-        for (int k = 0; k < rows; k++)
-        {
-            newMatrix.mat[i][k] -= matrix.mat[i][k];
-        }
-    }
-    return newMatrix;
+    return *this + (-matrix);
 }
 
 void Matrix::operator-=(const Matrix &matrix)
 {
     hasSameDimensionsCheck(*this, matrix);
-    for (int i = 0; i < rows; i++)
-    {
-        for (int k = 0; k < rows; k++)
-        {
-            mat[i][k] -= matrix.mat[i][k];
-        }
-    }
+    *this += (-matrix);
 }
 
-Matrix Matrix::operator*(double num)
+Matrix Matrix::operator*(double num) const
 {
     Matrix newMatrix = *this;
 
@@ -287,13 +272,7 @@ Matrix Matrix::operator*(double num)
 
 void Matrix::operator*=(double num)
 {
-    for (int i = 0; i < rows; i++)
-    {
-        for (int k = 0; k < rows; k++)
-        {
-            mat[i][k] *= num;
-        }
-    }
+    *this = *this * num;
 }
 
 bool Matrix::operator>(const Matrix &matrix)
@@ -324,7 +303,7 @@ bool Matrix::operator==(const Matrix &matrix)
 bool Matrix::operator!=(const Matrix &matrix)
 {
     hasSameDimensionsCheck(*this, matrix);
-    return !isEquals(matrix);
+    return !(*this == matrix);
 }
 
 Matrix &Matrix::operator++()
@@ -353,7 +332,7 @@ Matrix Matrix::operator--(int)
     return temp;
 }
 
-Matrix Matrix::multiply(const Matrix &matrix)
+Matrix Matrix::operator*(const Matrix &matrix) const
 {
     multiplyableCheck(*this, matrix);
     Matrix newMatix(rows, matrix.cols);
@@ -382,36 +361,7 @@ Matrix Matrix::multiply(const Matrix &matrix)
     return newMatix;
 }
 
-/**
- * @brief multiply this matrix with another without changing this matrix ,
- *
- * @param matrix
- * @return Matrix a copy of the new matrix
- */
-Matrix Matrix::operator*(const Matrix &matrix)
-{
-    return multiply(matrix);
-}
-
 void Matrix::operator*=(const Matrix &matrix)
 {
-    Matrix m = multiply(matrix);
-
-    for (int i = 0; i < rows; i++)
-    {
-        delete[] mat[i];
-    }
-    delete[] mat;
-
-    mat = new double *[(size_t)m.rows];
-    for (int i = 0; i < rows; i++)
-    {
-        mat[i] = new double[(size_t)m.cols];
-        for (size_t k = 0; k < m.cols; k++)
-        {
-            mat[i][k] = m.mat[i][k];
-        }
-    }
-    setRows(m.rows);
-    setCols(m.cols);
+    *this = *this * matrix;
 }
