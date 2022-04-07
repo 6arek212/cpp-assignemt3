@@ -17,7 +17,6 @@ namespace zich
         double sumOfMatrix() const;
         bool isEquals(const Matrix &matrix) const;
         void addNum(int num);
-        void initMat();
 
     public:
         Matrix(int rows, int cols);
