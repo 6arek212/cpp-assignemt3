@@ -30,10 +30,10 @@ namespace zich
         Matrix operator*(const Matrix &matrix) const;
         Matrix operator*(double num) const;
 
-        void operator*=(double num);
-        void operator+=(const Matrix &matrix);
-        void operator-=(const Matrix &matrix);
-        void operator*=(const Matrix &matrix);
+        Matrix& operator*=(double num);
+        Matrix& operator+=(const Matrix &matrix);
+        Matrix& operator-=(const Matrix &matrix);
+        Matrix& operator*=(const Matrix &matrix);
 
         bool operator>(const Matrix &matrix);
         bool operator>=(const Matrix &matrix);
@@ -42,7 +42,7 @@ namespace zich
         bool operator==(const Matrix &matrix);
         bool operator!=(const Matrix &matrix);
 
-        Matrix& operator=(const Matrix &matrix);
+        Matrix &operator=(const Matrix &matrix);
 
         Matrix &operator++();
         Matrix operator++(int);
@@ -50,21 +50,15 @@ namespace zich
         Matrix &operator--();
         Matrix operator--(int);
 
-        int getRows() const
-        {
-            return rows;
-        }
+        int getRows() const { return rows; }
 
-        int getCols() const
-        {
-            return cols;
-        }
+        int getCols() const { return cols; }
 
         void setRows(int rows);
         void setCols(int cols);
 
         friend std::ostream &operator<<(std::ostream &out, const Matrix &matrix);
-        friend void operator>>(std::istream &out, Matrix &matrix);
+        friend void operator>>(std::istream &in, Matrix &matrix);
         friend Matrix operator*(double num, const Matrix &matrix);
         friend Matrix operator-(const Matrix &matrix);
         friend Matrix operator+(const Matrix &matrix);

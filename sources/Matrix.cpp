@@ -26,13 +26,13 @@ namespace zich
         return out;
     }
 
-    void operator>>(std::istream &out, Matrix &matrix)
+    void operator>>(std::istream &in, Matrix &matrix)
     {
         for (size_t i = 0; i < matrix.rows; i++)
         {
             for (size_t k = 0; k < matrix.cols; k++)
             {
-                cin >> matrix.mat[i][k];
+                in >> matrix.mat[i][k];
             }
         }
     }
@@ -208,8 +208,8 @@ Matrix &Matrix::operator=(const Matrix &matrix)
     }
     delete[] mat;
 
-    this->rows = matrix.rows;
-    this->cols = matrix.cols;
+    setRows(matrix.rows);
+    setCols(matrix.cols);
     this->mat = new double *[(size_t)rows];
 
     for (int i = 0; i < rows; i++)
@@ -237,10 +237,11 @@ Matrix Matrix::operator+(const Matrix &matrix) const
     return newMatrix;
 }
 
-void Matrix::operator+=(const Matrix &matrix)
+Matrix& Matrix::operator+=(const Matrix &matrix)
 {
     hasSameDimensionsCheck(*this, matrix);
     *this = *this + matrix;
+    return *this;
 }
 
 Matrix Matrix::operator-(const Matrix &matrix) const
@@ -249,10 +250,11 @@ Matrix Matrix::operator-(const Matrix &matrix) const
     return *this + (-matrix);
 }
 
-void Matrix::operator-=(const Matrix &matrix)
+Matrix& Matrix::operator-=(const Matrix &matrix)
 {
     hasSameDimensionsCheck(*this, matrix);
     *this += (-matrix);
+    return *this;
 }
 
 Matrix Matrix::operator*(double num) const
@@ -270,9 +272,10 @@ Matrix Matrix::operator*(double num) const
     return newMatrix;
 }
 
-void Matrix::operator*=(double num)
+Matrix& Matrix::operator*=(double num)
 {
     *this = *this * num;
+    return *this;
 }
 
 bool Matrix::operator>(const Matrix &matrix)
@@ -361,7 +364,8 @@ Matrix Matrix::operator*(const Matrix &matrix) const
     return newMatix;
 }
 
-void Matrix::operator*=(const Matrix &matrix)
+Matrix& Matrix::operator*=(const Matrix &matrix)
 {
     *this = *this * matrix;
+    return *this;
 }
