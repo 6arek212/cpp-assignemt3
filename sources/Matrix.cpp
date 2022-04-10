@@ -166,7 +166,7 @@ Matrix::Matrix(const vector<double> &vec, int rows, int cols)
         mat[i] = new double[(size_t)cols];
         for (size_t k = 0; k < cols; k++)
         {
-            mat[i][k] = vec[i * (size_t)rows + k];
+            mat[i][k] = vec[i * (size_t)cols + k];
         }
     }
 }
@@ -237,7 +237,7 @@ Matrix Matrix::operator+(const Matrix &matrix) const
     return newMatrix;
 }
 
-Matrix& Matrix::operator+=(const Matrix &matrix)
+Matrix &Matrix::operator+=(const Matrix &matrix)
 {
     hasSameDimensionsCheck(*this, matrix);
     *this = *this + matrix;
@@ -250,7 +250,7 @@ Matrix Matrix::operator-(const Matrix &matrix) const
     return *this + (-matrix);
 }
 
-Matrix& Matrix::operator-=(const Matrix &matrix)
+Matrix &Matrix::operator-=(const Matrix &matrix)
 {
     hasSameDimensionsCheck(*this, matrix);
     *this += (-matrix);
@@ -263,7 +263,7 @@ Matrix Matrix::operator*(double num) const
 
     for (int i = 0; i < rows; i++)
     {
-        for (int k = 0; k < rows; k++)
+        for (int k = 0; k < cols; k++)
         {
             newMatrix.mat[i][k] *= num;
         }
@@ -272,7 +272,7 @@ Matrix Matrix::operator*(double num) const
     return newMatrix;
 }
 
-Matrix& Matrix::operator*=(double num)
+Matrix &Matrix::operator*=(double num)
 {
     *this = *this * num;
     return *this;
@@ -339,24 +339,17 @@ Matrix Matrix::operator*(const Matrix &matrix) const
 {
     multiplyableCheck(*this, matrix);
     Matrix newMatix(rows, matrix.cols);
+    double newValue;
 
     for (size_t i = 0; i < rows; i++)
     {
         for (size_t k = 0; k < matrix.cols; k++)
         {
-            double newValue = 0;
+            newValue = 0;
             for (size_t q = 0; q < cols; q++)
             {
-                if (q == 0)
-                {
-                    newValue = mat[i][q] * matrix.mat[q][k];
-                }
-                else
-                {
-                    newValue += mat[i][q] * matrix.mat[q][k];
-                }
+                newValue += mat[i][q] * matrix.mat[q][k];
             }
-
             newMatix.mat[i][k] = newValue;
         }
     }
@@ -364,7 +357,7 @@ Matrix Matrix::operator*(const Matrix &matrix) const
     return newMatix;
 }
 
-Matrix& Matrix::operator*=(const Matrix &matrix)
+Matrix &Matrix::operator*=(const Matrix &matrix)
 {
     *this = *this * matrix;
     return *this;
