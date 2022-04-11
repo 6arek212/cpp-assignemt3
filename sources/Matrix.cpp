@@ -127,8 +127,7 @@ namespace zich
             lastSize = temp.size();
             i++;
         }
-        Matrix newMatrix(temp, i, colsSize);
-        matrix = newMatrix;
+        matrix = Matrix(temp, i, colsSize);
     }
 
     Matrix operator*(double num, const Matrix &matrix)

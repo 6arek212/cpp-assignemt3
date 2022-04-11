@@ -96,8 +96,8 @@ TEST_CASE("Matrix op ++ / -- ")
     vector<double> arr1 = {3, 0, 0,
                            0, 3, 0,
                            0, 0, 3};
-    
-     vector<double> arr4 = {-3, 0, 0,
+
+    vector<double> arr4 = {-3, 0, 0,
                            0, -3, 0,
                            0, 0, -3};
 
@@ -129,7 +129,6 @@ TEST_CASE("Matrix op ++ / -- ")
 
     --matrix1;
     CHECK((matrix1 == Matrix(arr1, 3, 3)));
-
 
     CHECK((matrix1 == -matrix4));
 }
@@ -169,5 +168,4 @@ TEST_CASE("Test output/input operator")
     CHECK_THROWS(st2 >> mat1);
     istringstream st3{"[1 1111 1]    [1 1111 1 1], [1 1 1 1]\n"};
     CHECK_THROWS(st3 >> mat1);
-
 }
