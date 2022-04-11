@@ -29,17 +29,16 @@ namespace zich
         Matrix operator*(const Matrix &matrix) const;
         Matrix operator*(double num) const;
 
-        Matrix& operator*=(double num);
-        Matrix& operator+=(const Matrix &matrix);
-        Matrix& operator-=(const Matrix &matrix);
-        Matrix& operator*=(const Matrix &matrix);
+        Matrix &operator*=(double num);
+        Matrix &operator+=(const Matrix &matrix);
+        Matrix &operator-=(const Matrix &matrix);
+        Matrix &operator*=(const Matrix &matrix);
 
-        bool operator>(const Matrix &matrix);
-        bool operator>=(const Matrix &matrix);
-        bool operator<(const Matrix &matrix);
-        bool operator<=(const Matrix &matrix);
-        bool operator==(const Matrix &matrix);
-        bool operator!=(const Matrix &matrix);
+        bool operator>(const Matrix &matrix) const;
+        bool operator>=(const Matrix &matrix) const;
+        bool operator<(const Matrix &matrix) const;
+        bool operator<=(const Matrix &matrix) const;
+        bool operator!=(const Matrix &matrix) const;
 
         Matrix &operator=(const Matrix &matrix);
 
@@ -61,6 +60,7 @@ namespace zich
         friend Matrix operator*(double num, const Matrix &matrix);
         friend Matrix operator-(const Matrix &matrix);
         friend Matrix operator+(const Matrix &matrix);
+        friend bool operator==(const Matrix &matrix1, const Matrix &matrix2);
     };
 
 }

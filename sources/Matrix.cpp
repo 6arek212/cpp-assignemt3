@@ -4,6 +4,22 @@ using namespace std;
 
 namespace zich
 {
+    void hasSameDimensionsCheck(const Matrix &matrix1, const Matrix &matrix2)
+    {
+        if (matrix1.getCols() != matrix2.getCols() || matrix1.getRows() != matrix2.getRows())
+        {
+            throw "Error the matrixs must be with the same dimenssions";
+        }
+    }
+
+    void multiplyableCheck(const Matrix &matrix1, const Matrix &matrix2)
+    {
+        if (matrix1.getCols() != matrix2.getRows())
+        {
+            throw "Error ,multiplication not defiend for these matrixes";
+        }
+    }
+
     ostream &operator<<(std::ostream &out, const Matrix &matrix)
     {
         for (int i = 0; i < matrix.rows; i++)
@@ -20,21 +36,99 @@ namespace zich
                     out << matrix.mat[i][k];
                 }
             }
-            out << "]" << endl;
+            out << "]";
+            if (i < matrix.rows - 1)
+            {
+                out << endl;
+            }
         }
 
         return out;
     }
 
-    void operator>>(std::istream &in, Matrix &matrix)
+    bool isNumber(const string &str)
     {
-        for (size_t i = 0; i < matrix.rows; i++)
+        for (char const &c : str)
         {
-            for (size_t k = 0; k < matrix.cols; k++)
+            if (std::isdigit(c) == 0)
             {
-                in >> matrix.mat[i][k];
+                return false;
             }
         }
+        return true;
+    }
+    void getLine(vector<double> &temp, std::istream &in)
+    {
+        string input;
+        in >> input;
+        if (input[0] != '[')
+        {
+            throw "invalid input4";
+        }
+        input = input.substr(1);
+        temp.push_back(stod(input));
+
+        in >> input;
+        while (!in.eof() && isNumber(input))
+        {
+            temp.push_back(stod(input));
+            in >> input;
+        }
+
+        if (input[input.length() - 1] == ',' || input[input.length() - 1] == ']')
+        {
+
+            if (input[input.length() - 1] == ']')
+            {
+                temp.push_back(stod(input.substr(0, input.length() - 1)));
+                in >> input;
+
+                if (!in.eof())
+                {
+                    in >> input;
+                    if (input.length() > 0)
+                    {
+                        throw "invalid input5";
+                    }
+                }
+                return;
+            }
+            if (input[input.length() - 1] == ',')
+            {
+                if (in.eof() || input[input.length() - 2] != ']')
+                {
+                    throw "invalid input6";
+                }
+                temp.push_back(stod(input.substr(0, input.length() - 2)));
+                return;
+            }
+        }
+        throw "invalid input7";
+    }
+
+    void operator>>(std::istream &in, Matrix &matrix)
+    {
+        int i = 0;
+        int colsSize = 0;
+        int lastSize = 0;
+        vector<double> temp;
+
+        while (!in.eof())
+        {
+            getLine(temp, in);
+            if (i == 0)
+            {
+                colsSize = temp.size();
+            }
+            else if (temp.size() != lastSize + colsSize)
+            {
+                throw "invalid input1";
+            }
+            lastSize = temp.size();
+            i++;
+        }
+        Matrix newMatrix(temp, i, colsSize);
+        matrix = newMatrix;
     }
 
     Matrix operator*(double num, const Matrix &matrix)
@@ -52,313 +146,298 @@ namespace zich
         return matrix;
     }
 
-}
-
-void hasSameDimensionsCheck(const Matrix &matrix1, const Matrix &matrix2)
-{
-    if (matrix1.getCols() != matrix2.getCols() || matrix1.getRows() != matrix2.getRows())
+    bool operator==(const Matrix &matrix1, const Matrix &matrix2)
     {
-        throw "Error the matrixs must be with the same dimenssions";
+        hasSameDimensionsCheck(matrix1, matrix2);
+        return matrix1.isEquals(matrix2);
     }
-}
 
-void multiplyableCheck(const Matrix &matrix1, const Matrix &matrix2)
-{
-    if (matrix1.getCols() != matrix2.getRows())
+    void Matrix::setRows(int rows)
     {
-        throw "Error ,multiplication not defiend for these matrixes";
-    }
-}
-
-void Matrix::setRows(int rows)
-{
-    if (rows < 0)
-    {
-        throw "Rows cant be negative";
-    }
-    this->rows = rows;
-}
-void Matrix::setCols(int cols)
-{
-    if (cols < 0)
-    {
-        throw "Cols cant be negative";
-    }
-    this->cols = cols;
-}
-
-double Matrix::sumOfMatrix() const
-{
-    double sum = 0;
-    for (size_t i = 0; i < rows; i++)
-    {
-        for (size_t k = 0; k < cols; k++)
+        if (rows < 0)
         {
-            sum += mat[i][k];
+            throw "Rows cant be negative";
         }
+        this->rows = rows;
     }
-    return sum;
-}
-
-void Matrix::addNum(int num)
-{
-    for (size_t i = 0; i < rows; i++)
+    void Matrix::setCols(int cols)
     {
-        for (size_t k = 0; k < cols; k++)
+        if (cols < 0)
         {
-            mat[i][k] += num;
+            throw "Cols cant be negative";
         }
+        this->cols = cols;
     }
-}
 
-bool Matrix::isEquals(const Matrix &matrix) const
-{
-    for (size_t i = 0; i < rows; i++)
+    double Matrix::sumOfMatrix() const
     {
-        for (size_t k = 0; k < cols; k++)
+        double sum = 0;
+        for (size_t i = 0; i < rows; i++)
         {
-            if (mat[i][k] != matrix.mat[i][k])
+            for (size_t k = 0; k < cols; k++)
             {
-                return false;
+                sum += mat[i][k];
+            }
+        }
+        return sum;
+    }
+
+    void Matrix::addNum(int num)
+    {
+        for (size_t i = 0; i < rows; i++)
+        {
+            for (size_t k = 0; k < cols; k++)
+            {
+                mat[i][k] += num;
             }
         }
     }
-    return true;
-}
 
-Matrix::Matrix(int rows, int cols)
-{
-    if (rows < 0 || cols < 0)
+    bool Matrix::isEquals(const Matrix &matrix) const
     {
-        throw "Rows | cols , cant be negative";
-    }
-    this->rows = rows;
-    this->cols = cols;
-    this->mat = new double *[(size_t)rows];
-
-    for (size_t i = 0; i < rows; i++)
-    {
-        mat[i] = new double[(size_t)cols];
-        for (size_t k = 0; k < cols; k++)
+        for (size_t i = 0; i < rows; i++)
         {
-            mat[i][k] = 0;
+            for (size_t k = 0; k < cols; k++)
+            {
+                if (mat[i][k] != matrix.mat[i][k])
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    Matrix::Matrix(int rows, int cols)
+    {
+        if (rows < 0 || cols < 0)
+        {
+            throw "Rows | cols , cant be negative";
+        }
+        this->rows = rows;
+        this->cols = cols;
+        this->mat = new double *[(size_t)rows];
+
+        for (size_t i = 0; i < rows; i++)
+        {
+            mat[i] = new double[(size_t)cols];
+            for (size_t k = 0; k < cols; k++)
+            {
+                mat[i][k] = 0;
+            }
         }
     }
-}
 
-Matrix::Matrix(const vector<double> &vec, int rows, int cols)
-{
-    if (vec.size() != rows * cols)
+    Matrix::Matrix(const vector<double> &vec, int rows, int cols)
     {
-        throw "Error size is not correct";
-    }
-
-    if (rows < 0 || cols < 0)
-    {
-        throw "Rows | cols , cant be negative";
-    }
-    this->rows = rows;
-    this->cols = cols;
-    this->mat = new double *[(size_t)rows];
-
-    for (size_t i = 0; i < rows; i++)
-    {
-        mat[i] = new double[(size_t)cols];
-        for (size_t k = 0; k < cols; k++)
+        if (vec.size() != rows * cols)
         {
-            mat[i][k] = vec[i * (size_t)cols + k];
+            throw "Error size is not correct";
+        }
+
+        if (rows < 0 || cols < 0)
+        {
+            throw "Rows | cols , cant be negative";
+        }
+        this->rows = rows;
+        this->cols = cols;
+        this->mat = new double *[(size_t)rows];
+
+        for (size_t i = 0; i < rows; i++)
+        {
+            mat[i] = new double[(size_t)cols];
+            for (size_t k = 0; k < cols; k++)
+            {
+                mat[i][k] = vec[i * (size_t)cols + k];
+            }
         }
     }
-}
 
-Matrix::Matrix(const Matrix &matrix)
-{
-    this->rows = matrix.rows;
-    this->cols = matrix.cols;
-    this->mat = new double *[(size_t)rows];
-
-    for (int i = 0; i < rows; i++)
+    Matrix::Matrix(const Matrix &matrix)
     {
-        mat[i] = new double[(size_t)cols];
-        for (int k = 0; k < cols; k++)
+        this->rows = matrix.rows;
+        this->cols = matrix.cols;
+        this->mat = new double *[(size_t)rows];
+
+        for (int i = 0; i < rows; i++)
         {
-            mat[i][k] = matrix.mat[i][k];
+            mat[i] = new double[(size_t)cols];
+            for (int k = 0; k < cols; k++)
+            {
+                mat[i][k] = matrix.mat[i][k];
+            }
         }
     }
-}
 
-Matrix::~Matrix()
-{
-    for (int i = 0; i < rows; i++)
+    Matrix::~Matrix()
     {
-        delete[] mat[i];
+        for (int i = 0; i < rows; i++)
+        {
+            delete[] mat[i];
+        }
+        delete[] mat;
     }
-    delete[] mat;
-}
 
-Matrix &Matrix::operator=(const Matrix &matrix)
-{
-    if (this == &matrix)
+    Matrix &Matrix::operator=(const Matrix &matrix)
     {
+        if (this == &matrix)
+        {
+            return *this;
+        }
+        for (int i = 0; i < rows; i++)
+        {
+            delete[] mat[i];
+        }
+        delete[] mat;
+
+        setRows(matrix.rows);
+        setCols(matrix.cols);
+        this->mat = new double *[(size_t)rows];
+
+        for (int i = 0; i < rows; i++)
+        {
+            mat[i] = new double[(size_t)cols];
+            for (int k = 0; k < cols; k++)
+            {
+                mat[i][k] = matrix.mat[i][k];
+            }
+        }
         return *this;
     }
-    for (int i = 0; i < rows; i++)
-    {
-        delete[] mat[i];
-    }
-    delete[] mat;
 
-    setRows(matrix.rows);
-    setCols(matrix.cols);
-    this->mat = new double *[(size_t)rows];
-
-    for (int i = 0; i < rows; i++)
+    Matrix Matrix::operator+(const Matrix &matrix) const
     {
-        mat[i] = new double[(size_t)cols];
-        for (int k = 0; k < cols; k++)
+        hasSameDimensionsCheck(*this, matrix);
+        Matrix newMatrix = *this;
+        for (int i = 0; i < rows; i++)
         {
-            mat[i][k] = matrix.mat[i][k];
-        }
-    }
-    return *this;
-}
-
-Matrix Matrix::operator+(const Matrix &matrix) const
-{
-    hasSameDimensionsCheck(*this, matrix);
-    Matrix newMatrix = *this;
-    for (int i = 0; i < rows; i++)
-    {
-        for (int k = 0; k < rows; k++)
-        {
-            newMatrix.mat[i][k] += matrix.mat[i][k];
-        }
-    }
-    return newMatrix;
-}
-
-Matrix &Matrix::operator+=(const Matrix &matrix)
-{
-    hasSameDimensionsCheck(*this, matrix);
-    *this = *this + matrix;
-    return *this;
-}
-
-Matrix Matrix::operator-(const Matrix &matrix) const
-{
-    hasSameDimensionsCheck(*this, matrix);
-    return *this + (-matrix);
-}
-
-Matrix &Matrix::operator-=(const Matrix &matrix)
-{
-    hasSameDimensionsCheck(*this, matrix);
-    *this += (-matrix);
-    return *this;
-}
-
-Matrix Matrix::operator*(double num) const
-{
-    Matrix newMatrix = *this;
-
-    for (int i = 0; i < rows; i++)
-    {
-        for (int k = 0; k < cols; k++)
-        {
-            newMatrix.mat[i][k] *= num;
-        }
-    }
-
-    return newMatrix;
-}
-
-Matrix &Matrix::operator*=(double num)
-{
-    *this = *this * num;
-    return *this;
-}
-
-bool Matrix::operator>(const Matrix &matrix)
-{
-    hasSameDimensionsCheck(*this, matrix);
-    return this->sumOfMatrix() > matrix.sumOfMatrix();
-}
-bool Matrix::operator>=(const Matrix &matrix)
-{
-    hasSameDimensionsCheck(*this, matrix);
-    return isEquals(matrix) || this->sumOfMatrix() > matrix.sumOfMatrix();
-}
-bool Matrix::operator<(const Matrix &matrix)
-{
-    hasSameDimensionsCheck(*this, matrix);
-    return this->sumOfMatrix() < matrix.sumOfMatrix();
-}
-bool Matrix::operator<=(const Matrix &matrix)
-{
-    hasSameDimensionsCheck(*this, matrix);
-    return isEquals(matrix) || this->sumOfMatrix() < matrix.sumOfMatrix();
-}
-bool Matrix::operator==(const Matrix &matrix)
-{
-    hasSameDimensionsCheck(*this, matrix);
-    return isEquals(matrix);
-}
-bool Matrix::operator!=(const Matrix &matrix)
-{
-    hasSameDimensionsCheck(*this, matrix);
-    return !(*this == matrix);
-}
-
-Matrix &Matrix::operator++()
-{
-    addNum(1);
-    return *this;
-}
-
-Matrix Matrix::operator++(int)
-{
-    Matrix temp = *this;
-    ++*this;
-    return temp;
-}
-
-Matrix &Matrix::operator--()
-{
-    addNum(-1);
-    return *this;
-}
-
-Matrix Matrix::operator--(int)
-{
-    Matrix temp = *this;
-    --*this;
-    return temp;
-}
-
-Matrix Matrix::operator*(const Matrix &matrix) const
-{
-    multiplyableCheck(*this, matrix);
-    Matrix newMatix(rows, matrix.cols);
-    double newValue;
-
-    for (size_t i = 0; i < rows; i++)
-    {
-        for (size_t k = 0; k < matrix.cols; k++)
-        {
-            newValue = 0;
-            for (size_t q = 0; q < cols; q++)
+            for (int k = 0; k < cols; k++)
             {
-                newValue += mat[i][q] * matrix.mat[q][k];
+                newMatrix.mat[i][k] += matrix.mat[i][k];
             }
-            newMatix.mat[i][k] = newValue;
         }
+        return newMatrix;
     }
 
-    return newMatix;
-}
+    Matrix &Matrix::operator+=(const Matrix &matrix)
+    {
+        hasSameDimensionsCheck(*this, matrix);
+        *this = *this + matrix;
+        return *this;
+    }
 
-Matrix &Matrix::operator*=(const Matrix &matrix)
-{
-    *this = *this * matrix;
-    return *this;
+    Matrix Matrix::operator-(const Matrix &matrix) const
+    {
+        hasSameDimensionsCheck(*this, matrix);
+        return *this + (-matrix);
+    }
+
+    Matrix &Matrix::operator-=(const Matrix &matrix)
+    {
+        hasSameDimensionsCheck(*this, matrix);
+        *this += (-matrix);
+        return *this;
+    }
+
+    Matrix Matrix::operator*(double num) const
+    {
+        Matrix newMatrix = *this;
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int k = 0; k < cols; k++)
+            {
+                newMatrix.mat[i][k] *= num;
+            }
+        }
+
+        return newMatrix;
+    }
+
+    Matrix &Matrix::operator*=(double num)
+    {
+        *this = *this * num;
+        return *this;
+    }
+
+    bool Matrix::operator>(const Matrix &matrix) const
+    {
+        hasSameDimensionsCheck(*this, matrix);
+        return this->sumOfMatrix() > matrix.sumOfMatrix();
+    }
+    bool Matrix::operator>=(const Matrix &matrix) const
+    {
+        hasSameDimensionsCheck(*this, matrix);
+        return isEquals(matrix) || this->sumOfMatrix() > matrix.sumOfMatrix();
+    }
+    bool Matrix::operator<(const Matrix &matrix) const
+    {
+        hasSameDimensionsCheck(*this, matrix);
+        return this->sumOfMatrix() < matrix.sumOfMatrix();
+    }
+    bool Matrix::operator<=(const Matrix &matrix) const
+    {
+        hasSameDimensionsCheck(*this, matrix);
+        return isEquals(matrix) || this->sumOfMatrix() < matrix.sumOfMatrix();
+    }
+
+    bool Matrix::operator!=(const Matrix &matrix) const
+    {
+        hasSameDimensionsCheck(*this, matrix);
+        return !(*this == matrix);
+    }
+
+    Matrix &Matrix::operator++()
+    {
+        addNum(1);
+        return *this;
+    }
+
+    Matrix Matrix::operator++(int)
+    {
+        Matrix temp = *this;
+        ++*this;
+        return temp;
+    }
+
+    Matrix &Matrix::operator--()
+    {
+        addNum(-1);
+        return *this;
+    }
+
+    Matrix Matrix::operator--(int)
+    {
+        Matrix temp = *this;
+        --*this;
+        return temp;
+    }
+
+    Matrix Matrix::operator*(const Matrix &matrix) const
+    {
+        multiplyableCheck(*this, matrix);
+        Matrix newMatix(rows, matrix.cols);
+        double newValue = 0;
+
+        for (size_t i = 0; i < rows; i++)
+        {
+            for (size_t k = 0; k < matrix.cols; k++)
+            {
+                newValue = 0;
+                for (size_t q = 0; q < cols; q++)
+                {
+                    newValue += mat[i][q] * matrix.mat[q][k];
+                }
+                newMatix.mat[i][k] = newValue;
+            }
+        }
+
+        return newMatix;
+    }
+
+    Matrix &Matrix::operator*=(const Matrix &matrix)
+    {
+        *this = *this * matrix;
+        return *this;
+    }
 }
