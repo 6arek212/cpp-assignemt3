@@ -96,6 +96,10 @@ TEST_CASE("Matrix op ++ / -- ")
     vector<double> arr1 = {3, 0, 0,
                            0, 3, 0,
                            0, 0, 3};
+    
+     vector<double> arr4 = {-3, 0, 0,
+                           0, -3, 0,
+                           0, 0, -3};
 
     vector<double> arr2 = {1, 0, 0,
                            0, 1, 0,
@@ -112,6 +116,7 @@ TEST_CASE("Matrix op ++ / -- ")
     Matrix matrix1(arr1, 3, 3);
     Matrix matrix2(arr2, 3, 3);
     Matrix matrix3(arr3, 3, 3);
+    Matrix matrix4(arr4, 3, 3);
 
     matrix1++;
     CHECK((matrix1 == Matrix(arr1pp, 3, 3)));
@@ -124,6 +129,9 @@ TEST_CASE("Matrix op ++ / -- ")
 
     --matrix1;
     CHECK((matrix1 == Matrix(arr1, 3, 3)));
+
+
+    CHECK((matrix1 == -matrix4));
 }
 
 TEST_CASE("Test output/input operator")
