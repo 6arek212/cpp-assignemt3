@@ -1,7 +1,8 @@
 #include "doctest.h"
 #include "Matrix.hpp"
 using namespace zich;
-
+#include <fstream>
+#include <sstream>
 #include <string>
 using namespace std;
 
@@ -125,3 +126,40 @@ TEST_CASE("Matrix op ++ / -- ")
     CHECK((matrix1 == Matrix(arr1, 3, 3)));
 }
 
+TEST_CASE("Test output/input operator")
+{
+
+    vector<double> arr1 = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+    vector<double> arr2 = {3, -2, 0, 0, 3, 0, -1, 0, 3};
+    vector<double> arr3 = {5, 0, 0, 0, 5, 0, 0, 0, 5};
+    vector<double> arr4 = {5, 0, 0, 6, 7,
+                           7, 0, 5, 0, 0,
+                           0, 5, 0, 0, 0};
+    Matrix mat1{arr1, 3, 3};
+    Matrix mat2{arr2, 3, 3};
+    Matrix mat3{arr3, 3, 3};
+    Matrix mat4{arr4, 3, 5};
+
+    // out
+    ostringstream ostream1;
+    ostream1 << mat1;
+    CHECK(ostream1.str() == "[1 0 0]\n[0 1 0]\n[0 0 1]");
+    ostringstream ostream2;
+    ostream2 << mat2;
+    CHECK(ostream2.str() == "[3 -2 0]\n[0 3 0]\n[-1 0 3]");
+    ostringstream ostream3;
+    ostream3 << mat3;
+    CHECK(ostream3.str() == "[5 0 0]\n[0 5 0]\n[0 0 5]");
+
+    // in
+    ostringstream ostream4;
+    ostream4 << mat4;
+    CHECK(ostream4.str() == "[5 0 0 6 7]\n[7    0 5 0 0]\n[0 5 0 0 0]");
+    istringstream st1{"[1 1 1 1]$[1 1 1 1], [1 1   1 1]\n"};
+    CHECK_THROWS(st1 >> mat1);
+    istringstream st2{"[1 1 1 1]+, [1 1 1   1] [1  1 1 1],\n"};
+    CHECK_THROWS(st2 >> mat1);
+    istringstream st3{"[1 1111 1]    [1 1111 1 1], [1 1 1 1]\n"};
+    CHECK_THROWS(st3 >> mat1);
+
+}
